@@ -24,6 +24,7 @@ func Timestamp(t time.Time) string {
 
 type Client struct {
 	WriteKey   string
+	ReadKey    string
 	ProjectID  string
 	HttpClient http.Client
 }
