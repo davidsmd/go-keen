@@ -75,5 +75,5 @@ func (c *Client) MetricJSON(metric string, params *AnalysisParams) (string, erro
 
 func (c *Client) MetricByte(metric string, params *AnalysisParams) ([]byte, error) {
 	resp, _ := c.query("/"+metric, params)
-	getBody(resp)
+	return getBody(resp)
 }
