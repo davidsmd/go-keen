@@ -54,6 +54,9 @@ func (c *Client) respToError(resp *http.Response) error {
 	}
 
 	data, err := ioutil.ReadAll(resp.Body)
+
+	fmt.Println(data)
+
 	if err != nil {
 		return err
 	}
