@@ -3,7 +3,6 @@ package keen
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -22,8 +21,7 @@ type AnalysisParams struct {
 	// Steps
 }
 
-type AnalysisResult struct {
-	Result int64 `json:"result,omitempty"`
+type Timeframe struct {
 }
 
 func (c *Client) query(path string, params *AnalysisParams) (*http.Response, error) {
@@ -54,78 +52,28 @@ func (c *Client) query(path string, params *AnalysisParams) (*http.Response, err
 	return c.HttpClient.Do(req)
 }
 
-func (c *Client) storeInInterface(resp *http.Response, dest *interface{}) error {
+func getBody(resp *http.Response) ([]byte, error) {
 	defer resp.Body.Close()
-
-	if resp.StatusCode >= 400 {
-		return nil
-	}
-
 	data, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(string(data))
-	json.Unmarshal(data, &dest)
 
 	if err != nil {
-		return err
+		return nil, fmt.Errorf("Error reading response body: %s", err)
 	}
 
-	return fmt.Errorf("Non 200 reply from keen.io: %s", data)
-}
-
-func (c *Client) metric(metric string, params *AnalysisParams, dest interface{}) error {
-	resp, err := c.query("/"+metric, params)
-	if err != nil {
-		return err
+	if resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("Non 200 reply from keen.io: %s", data)
 	}
 
-	c.storeInInterface(resp, &dest)
-
-	return nil
+	return data, nil
 }
 
-func (c *Client) Count(params *AnalysisParams, dest interface{}) error {
-	return c.metric("count", params, dest)
+func (c *Client) MetricJSON(metric string, params *AnalysisParams) (string, error) {
+	resp, _ := c.query("/"+metric, params)
+	data, err := getBody(resp)
+	return string(data), err
 }
 
-func (c *Client) CountUnique(params *AnalysisParams, dest interface{}) error {
-	if params.TargetProperty == "" {
-		return errors.New("TargetProperty must be supplied")
-	}
-	return c.metric("count_unique", params, dest)
-}
-func (c *Client) Minimum(params *AnalysisParams, dest interface{}) error {
-	if params.TargetProperty == "" {
-		return errors.New("TargetProperty must be supplied")
-	}
-	return c.metric("minimum", params, dest)
-}
-func (c *Client) Maximum(params *AnalysisParams, dest interface{}) error {
-	if params.TargetProperty == "" {
-		return errors.New("TargetProperty must be supplied")
-	}
-	return c.metric("maximum", params, dest)
-}
-func (c *Client) Average(params *AnalysisParams, dest interface{}) error {
-	if params.TargetProperty == "" {
-		return errors.New("TargetProperty must be supplied")
-	}
-	return c.metric("average", params, dest)
-}
-func (c *Client) Median(params *AnalysisParams, dest interface{}) error {
-	if params.TargetProperty == "" {
-		return errors.New("TargetProperty must be supplied")
-	}
-	return c.metric("median", params, dest)
-}
-func (c *Client) Percentile(params *AnalysisParams, dest interface{}) error {
-	if params.TargetProperty == "" {
-		return errors.New("TargetProperty must be supplied")
-	}
-	return c.metric("percentile", params, dest)
-}
-func (c *Client) Sum(params *AnalysisParams, dest interface{}) error {
-	if params.TargetProperty == "" {
-		return errors.New("TargetProperty must be supplied")
-	}
-	return c.metric("sum", params, dest)
+func (c *Client) MetricByte(metric string, params *AnalysisParams) ([]byte, error) {
+	resp, _ := c.query("/"+metric, params)
+	getBody(resp)
 }
