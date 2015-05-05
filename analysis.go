@@ -43,8 +43,6 @@ func (c *Client) query(path string, params *AnalysisParams) (*http.Response, err
 	// construct url
 	url := baseUrl + c.ProjectID + "/queries" + path
 
-	fmt.Println("body request", string(body))
-
 	// new request
 	req, err := http.NewRequest("POST", url, bytes.NewReader(body))
 	if err != nil {
