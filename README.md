@@ -75,6 +75,6 @@ func main() {
 
 ## TODO
 
-- [ ] Timeframes as objects
-- [ ] Filters for data analysis
+- [x] Timeframes as objects
+- [x] Filters for data analysis
 - [ ] Steps for data analysis

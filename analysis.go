@@ -6,22 +6,31 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 // AnalysisParams is a struct of all possible options for DataAnalysis queries. This
 // struct will be marshalled into a POST body
 type AnalysisParams struct {
-	EventCollection string `json:"event_collection"`
-	Timeframe       string `json:"timeframe,omitempty"` // Need to change this to be a pointer to another struct
-	Interval        string `json:"interval,omitempty"`
-	GroupBy         string `json:"group_by,omitempty"`
-	MaxAge          int64  `json:"maxAge,omitempty"`
-	TargetProperty  string `json:"target_property,omitempty"`
-	// Filters
+	EventCollection string      `json:"event_collection"`
+	Timeframe       interface{} `json:"timeframe,omitempty"`
+	Interval        string      `json:"interval,omitempty"`
+	GroupBy         string      `json:"group_by,omitempty"`
+	MaxAge          int64       `json:"maxAge,omitempty"`
+	TargetProperty  string      `json:"target_property,omitempty"`
+	Filters         []Filter    `json:"filters,omitempty"`
 	// Steps
 }
 
+type Filter struct {
+	PropertyName  string      `json:"property_name"`
+	Operator      string      `json:"operator"`
+	PropertyValue interface{} `json:"property_value"`
+}
+
 type Timeframe struct {
+	Start time.Time `json:"start"`
+	End   time.Time `json:"end"`
 }
 
 func (c *Client) query(path string, params *AnalysisParams) (*http.Response, error) {
@@ -33,6 +42,8 @@ func (c *Client) query(path string, params *AnalysisParams) (*http.Response, err
 
 	// construct url
 	url := baseUrl + c.ProjectID + "/queries" + path
+
+	fmt.Println("body request", string(body))
 
 	// new request
 	req, err := http.NewRequest("POST", url, bytes.NewReader(body))
