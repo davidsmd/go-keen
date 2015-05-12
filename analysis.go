@@ -14,6 +14,7 @@ import (
 type AnalysisParams struct {
 	EventCollection string      `json:"event_collection"`
 	Timeframe       interface{} `json:"timeframe,omitempty"`
+	Timezone        string      `json:"timezone,omitempty"`
 	Interval        string      `json:"interval,omitempty"`
 	GroupBy         string      `json:"group_by,omitempty"`
 	MaxAge          int64       `json:"maxAge,omitempty"`
