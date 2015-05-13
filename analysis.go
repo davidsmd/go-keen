@@ -23,6 +23,8 @@ type AnalysisParams struct {
 	// Steps
 }
 
+// Filter is a struct that marshals into a JSON struct matching Keen analysis filters
+// https://keen.io/docs/data-analysis/filters/
 type Filter struct {
 	PropertyName  string      `json:"property_name"`
 	Operator      string      `json:"operator"`
