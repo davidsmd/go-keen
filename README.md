@@ -1,11 +1,8 @@
-# Keen IO golang client SDK [![godoc reference](http://godoc.org/gopkg.in/inconshreveable/go-keen.v0?status.png)](http://godoc.org/gopkg.in/inconshreveable/go-keen.v0)
+# Keen IO golang client SDK
 
 ## API Stability
 
-The master branch has no API stability guarantees. You can import the latest stable API with:
-```go
-import "gopkg.in/inconshreveable/go-keen.v0"
-````
+**The master branch has no API stability guarantees.**
 
 ## Writing Events
 
@@ -16,7 +13,7 @@ The simplest API is to create a client object and then call AddEvent:
 package main
 
 import (
-        "github.com/inconshreveable/go-keen"
+        "github.com/oreillymedia/go-keen"
 )
 
 type ExampleEvent struct {
@@ -48,7 +45,7 @@ flushes the events to Keen.
 package main
 
 import (
-        "github.com/inconshreveable/go-keen"
+        "github.com/oreillymedia/go-keen"
         "time"
 )
 

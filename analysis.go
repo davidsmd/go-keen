@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 // AnalysisParams is a struct of all possible options for DataAnalysis queries. This
@@ -31,9 +30,11 @@ type Filter struct {
 	PropertyValue interface{} `json:"property_value"`
 }
 
+// Timeframe is a pair of strings denoting an absolute timeframe
+// https://keen.io/docs/data-analysis/timeframe/#absolute-timeframes
 type Timeframe struct {
-	Start time.Time `json:"start"`
-	End   time.Time `json:"end"`
+	Start string `json:"start"`
+	End   string `json:"end"`
 }
 
 func (c *Client) query(path string, params *AnalysisParams) (*http.Response, error) {
