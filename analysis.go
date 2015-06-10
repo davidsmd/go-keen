@@ -15,7 +15,7 @@ type AnalysisParams struct {
 	Timeframe       interface{} `json:"timeframe,omitempty"`
 	Timezone        string      `json:"timezone,omitempty"`
 	Interval        string      `json:"interval,omitempty"`
-	GroupBy         string      `json:"group_by,omitempty"`
+	GroupBy         []string    `json:"group_by,omitempty"`
 	MaxAge          int64       `json:"maxAge,omitempty"`
 	TargetProperty  string      `json:"target_property,omitempty"`
 	Filters         []Filter    `json:"filters,omitempty"`
@@ -74,7 +74,7 @@ func getBody(resp *http.Response) ([]byte, error) {
 	}
 
 	if resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("Non 200 reply from keen.io: %s", data)
+		return nil, fmt.Errorf("Non 200 reply from keen.io [%d]: %s", resp.StatusCode, data)
 	}
 
 	return data, nil
