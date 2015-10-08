@@ -22,6 +22,11 @@ type AnalysisParams struct {
 	// Steps
 }
 
+type Analysis struct {
+	Metric string
+	Params AnalysisParams
+}
+
 // Filter is a struct that marshals into a JSON struct matching Keen analysis filters
 // https://keen.io/docs/data-analysis/filters/
 type Filter struct {
@@ -86,7 +91,8 @@ func (c *Client) MetricJSON(metric string, params *AnalysisParams) (string, erro
 	return string(data), err
 }
 
-func (c *Client) MetricByte(metric string, params *AnalysisParams) ([]byte, error) {
-	resp, _ := c.query("/"+metric, params)
-	return getBody(resp)
+func (c *Client) Query(analysis Analysis) (string, error) {
+	resp, _ := c.query("/"+analysis.Metric, &analysis.Params)
+	data, err := getBody(resp)
+	return string(data), err
 }
