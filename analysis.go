@@ -79,7 +79,7 @@ func getBody(resp *http.Response) ([]byte, error) {
 	}
 
 	if resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("Non 200 reply from keen.io [%d]: %s", resp.StatusCode, data)
+		return nil, fmt.Errorf("Critical: Non 200 reply from keen.io [%d]: %s", resp.StatusCode, data)
 	}
 
 	return data, nil
