@@ -41,7 +41,7 @@ func main() {
     // attach desired addons to client before starting batch collection loop
     exampleClient.AttachAddon("keen:ua_parser", struct{ UAString string `json:"ua_string"` }{"agent"}, "agent_parsed")
 
-    exampleClient.BatchLoop()
+    go exampleClient.BatchLoop()
 
     testEvent := &exampleEvent{
         UserId:     11,
