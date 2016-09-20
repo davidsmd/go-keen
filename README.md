@@ -4,6 +4,8 @@
 
 **The master branch has no API stability guarantees.**
 
+**Readme need to be rewritten today. This is no longer valid.**
+
 ## Writing Events
 
 This is the very beginnings of a Keen IO client SDK in Go. Currently, only adding events to collections is supported.
