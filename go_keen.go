@@ -116,6 +116,7 @@ func (c *Client) CreateEvent(userTimestamp string, userEvent interface{}) (err e
 
 	select {
 	case c.eventChan <- baseEvent:
+		log.Println("Keen | CreateEvent | adding event:", baseEvent)
 		// maybe a print here later for debug...
 	case <-time.After(c.timeout):
 		return fmt.Errorf("Keen | Timeout while adding event to batch.")
@@ -127,6 +128,7 @@ func (c *Client) BatchLoop() {
 	// straight from the original version... mostly
 	go func() {
 		for _ = range time.Tick(c.flushTime) {
+			log.Println("Keen | BatchLoop | Tick | Flushing on tick")
 			c.flushChan <- 1
 		}
 	}()
@@ -136,14 +138,18 @@ func (c *Client) BatchLoop() {
 	for {
 		select {
 		case evt := <-c.eventChan:
+			log.Println("Keen | BatchLoop | Select | adding event:", evt)
 			list, ok := batch[c.CollectionName]
 			if !ok {
 				list = make([]interface{}, 0)
 			}
 			batch[c.CollectionName] = append(list, evt)
+			log.Println("Keen | BatchLoop | Select | batch contents after append:", batch)
 
 		case <-c.flushChan:
+			log.Println("Keen | BatchLoop | Select | flushing...")
 			if len(batch) == 0 {
+				log.Println("Keen | BatchLoop | Select | Batch is empty!")
 				continue
 			}
 			err := c.PushEvents(batch)
@@ -165,6 +171,7 @@ func (c *Client) PushEvents(events map[string][]interface{}) (err error) {
 	defer resp.Body.Close()
 
 	log.Println("Returned status:", resp.StatusCode)
+	// need status code check here
 
 	return nil
 }
